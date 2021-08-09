@@ -15,7 +15,9 @@ router.get('/', ensureGuest, (req, res) => {
 // @route       Get /dashboard
 // Middleware ensures that only signed in user can access this route
 router.get('/dashboard', ensureAuth, (req, res) => {
-    res.render('dashboard');
+    res.render('dashboard', {
+        name: req.user.firstName,
+    });
 });
 
 module.exports = router;
