@@ -1,9 +1,11 @@
 const express = require('express');
 const router = express.Router();
+const { ensureAuth, ensureGuest } = require('../middleware/auth.js');
 
 // @desc         Login/Landing Page
 // @route       Get /
-router.get('/', (req, res) => {
+// Middleware ensures that signed in User can't access this route
+router.get('/', ensureGuest, (req, res) => {
     res.render('login', {
         layout: 'login'
     });
@@ -11,7 +13,8 @@ router.get('/', (req, res) => {
 
 // @desc         Dashbaord
 // @route       Get /dashboard
-router.get('/dashboard', (req, res) => {
+// Middleware ensures that only signed in user can access this route
+router.get('/dashboard', ensureAuth, (req, res) => {
     res.render('dashboard');
 });
 
