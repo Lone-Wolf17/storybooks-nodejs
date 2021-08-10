@@ -11,7 +11,7 @@ const morgan = require('morgan');
 const indexRouter = require('./routes/index.js');
 const authRouter = require('./routes/auth.js');
 const storiesRouter = require('./routes/stories.js');
-const { formatDate, truncate, stripTags } = require ('./helpers/hbs.js'); /// Handlebars Helpers
+const { formatDate, truncate, stripTags, editIcon, select } = require ('./helpers/hbs.js'); /// Handlebars Helpers
 
 // Load Config
 dotenv.config({ path: './config/config.env' });
@@ -40,7 +40,9 @@ app.engine(
         helpers: {
             formatDate,
             truncate,
-            stripTags
+            stripTags,
+            editIcon,
+            select
         },
         defaultLayout: 'main',
         extname: '.hbs'
@@ -58,6 +60,12 @@ app.use(session({
 /// Passport middleware
 app.use(passport.initialize());
 app.use(passport.session());
+
+// Set Globar var
+app.use(function (req, res, next) {
+    res.locals.user = req.user || null;
+    next();
+})
 
 // Static Folder
 app.use(express.static(path.join(__dirname, 'public')));
