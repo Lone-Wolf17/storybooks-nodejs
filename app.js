@@ -10,6 +10,7 @@ const connectDB = require('./config/db.js');
 const morgan = require('morgan');
 const indexRouter = require('./routes/index.js');
 const authRouter = require('./routes/auth.js');
+const storiesRouter = require('./routes/stories.js');
 
 // Load Config
 dotenv.config({ path: './config/config.env' });
@@ -19,7 +20,11 @@ require('./config/passport.js')(passport);
 
 connectDB();
 
-const app = express()
+const app = express();
+
+// Body Parser
+app.use(express.urlencoded({ extended: false }));
+app.use(express.json());
 
 /// Setup Logging
 if (process.env.NODE_ENV === 'development') {
@@ -49,6 +54,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 // Setup Routes
 app.use('/', indexRouter);
 app.use('/auth', authRouter);
+app.use('/stories', storiesRouter);
 
 const PORT = process.env.PORT || 5000
 
