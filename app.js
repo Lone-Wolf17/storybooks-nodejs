@@ -11,7 +11,7 @@ const morgan = require('morgan');
 const indexRouter = require('./routes/index.js');
 const authRouter = require('./routes/auth.js');
 const storiesRouter = require('./routes/stories.js');
-const { formatDate } = require ('./helpers/hbs.js'); /// Handlebars Helpers
+const { formatDate, truncate, stripTags } = require ('./helpers/hbs.js'); /// Handlebars Helpers
 
 // Load Config
 dotenv.config({ path: './config/config.env' });
@@ -39,6 +39,8 @@ app.engine(
     exphbs({
         helpers: {
             formatDate,
+            truncate,
+            stripTags
         },
         defaultLayout: 'main',
         extname: '.hbs'
