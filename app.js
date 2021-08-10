@@ -11,6 +11,7 @@ const morgan = require('morgan');
 const indexRouter = require('./routes/index.js');
 const authRouter = require('./routes/auth.js');
 const storiesRouter = require('./routes/stories.js');
+const { formatDate } = require ('./helpers/hbs.js'); /// Handlebars Helpers
 
 // Load Config
 dotenv.config({ path: './config/config.env' });
@@ -33,7 +34,15 @@ if (process.env.NODE_ENV === 'development') {
 
 /// Setup Handlebars
 app.set('views', path.join(__dirname, 'views'));
-app.engine('.hbs', exphbs({ defaultLayout: 'main', extname: '.hbs' }));
+app.engine(
+    '.hbs',
+    exphbs({
+        helpers: {
+            formatDate,
+        },
+        defaultLayout: 'main',
+        extname: '.hbs'
+    }));
 app.set('view engine', '.hbs');
 
 /// Express Sessions Middleware
