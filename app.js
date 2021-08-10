@@ -8,6 +8,7 @@ const MongoStore = require('connect-mongo');
 const exphbs = require('express-handlebars');
 const connectDB = require('./config/db.js');
 const morgan = require('morgan');
+const methodOveride = require('method-override');
 const indexRouter = require('./routes/index.js');
 const authRouter = require('./routes/auth.js');
 const storiesRouter = require('./routes/stories.js');
@@ -26,6 +27,16 @@ const app = express();
 // Body Parser
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
+
+/// Method Override
+app.use(methodOveride(function (req, res) {
+    if (req.body && typeof req.body === 'object' && '_method' in req.body) {
+        /// Look in urlencoded POST bodies & delete it 
+        let method = req.body._method;
+        delete req.body._method;
+        return method;
+    }
+}));
 
 /// Setup Logging
 if (process.env.NODE_ENV === 'development') {
