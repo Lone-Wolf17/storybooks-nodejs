@@ -43,6 +43,28 @@ router.get("/", ensureAuth, async (req, res) => {
   }
 });
 
+
+// @desc         Show single story page
+// @route       Get /stories/:id
+// Middleware ensures that only signed in User can access this route
+router.get("/:id", ensureAuth, async (req, res) => {
+  try {
+    let story = await Story.findById(req.params.id)
+      .populate('user')
+      .lean();
+
+      if (!story) return res.render('error/404');
+
+      res.render('stories/show', {
+        story
+      });
+  } catch (err) {
+    console.error(err);
+    res.render('error/404');
+  }
+});
+
+
 // @desc         Show edit page
 // @route       Get /stories/edit/:id
 // Middleware ensures that only signed in User can access this route
