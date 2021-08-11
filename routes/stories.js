@@ -43,40 +43,35 @@ router.get("/", ensureAuth, async (req, res) => {
   }
 });
 
-
 // @desc         Show single story page
 // @route       Get /stories/:id
 // Middleware ensures that only signed in User can access this route
 router.get("/:id", ensureAuth, async (req, res) => {
   try {
-    let story = await Story.findById(req.params.id)
-      .populate('user')
-      .lean();
+    let story = await Story.findById(req.params.id).populate("user").lean();
 
-      if (!story) return res.render('error/404');
+    if (!story) return res.render("error/404");
 
-      res.render('stories/show', {
-        story
-      });
+    res.render("stories/show", {
+      story,
+    });
   } catch (err) {
     console.error(err);
-    res.render('error/404');
+    res.render("error/404");
   }
 });
-
 
 // @desc         Show edit page
 // @route       Get /stories/edit/:id
 // Middleware ensures that only signed in User can access this route
 router.get("/edit/:id", ensureAuth, async (req, res) => {
-
   try {
     const story = await Story.findOne({
       _id: req.params.id,
     }).lean();
-  
+
     if (!story) return res.render("error/404");
-  
+
     if (story.user != req.user.id) {
       res.redirect("/stories");
     } else {
@@ -127,6 +122,27 @@ router.delete("/:id", ensureAuth, async (req, res) => {
   } catch (err) {
     console.error(err);
     return res.render("error/500");
+  }
+});
+
+// @desc        User Story
+// @route       Get /stories/user/:userId
+// Middleware ensures that only signed in User can access this route
+router.get("/user/:userId", ensureAuth, async (req, res) => {
+  try {
+    const stories = await Story.find({
+      user: req.params.userId,
+      status: "public",
+    })
+      .populate("user")
+      .lean();
+
+    res.render("stories/index", {
+      stories,
+    });
+  } catch (err) {
+    console.error(err);
+    res.render('error/500');
   }
 });
 
